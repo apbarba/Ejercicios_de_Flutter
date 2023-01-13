@@ -1,101 +1,67 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 
 void main() {
   runApp(const MyApp());
 }
 
+class PokemonDetails {
+  final String name;
+  final String url;
+
+  PokemonDetails({required this.name, required this.url});
+
+  factory PokemonDetails.fromJson(Map<String, dynamic> json) {
+    return PokemonDetails(
+      name: json['name'],
+      url: json['url'],
+    );
+  }
+}
+
+Future<http.Response> getPokemonsList() {
+  return http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#'));
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder(
+        future: getPokemonsList(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            var data = json.decode(snapshot.data.body);
 
-  Future<http.Response> getPokemons() {
-  return http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#'));
-}
+            var pokemons = (data['results'] as List)
+                .map((p) => PokemonDetails.fromJson(p))
+                .toList();
 
-class Pokemon {
-  final String name;
-  final String url;
-
-  Pokemon({this.name, this.url});
-
-  factory Pokemon.fromJson(Map<String, dynamic> json) {
-    return Pokemon(
-      name: json['name'],
-      url: json['url'],
+            return ListView.builder(
+              itemCount: pokemons.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(pokemons[index].name),
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 }
 
 
 
-Copy code
-import 'package:http/http.dart' as http;
-
-Future<http.Response> getPokemons() {
-  return http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#'));
-}
-Crea una clase Pokemon para almacenar la información de cada pokemon.
-Copy code
-class Pokemon {
-  final String name;
-  final String url;
-
-  Pokemon({this.name, this.url});
-
-  factory Pokemon.fromJson(Map<String, dynamic> json) {
-    return Pokemon(
-      name: json['name'],
-      url: json['url'],
-    );
-  }
-}
-
-@override
-Widget build(BuildContext context) {
-  
-  return Scaffold(
-    
-    body: FutureBuilder(
-      
-      future: getPokemons(),
-      
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-       
-        if (snapshot.hasData) {
-         
-          var data = json.decode(snapshot.data.body);
-         
-          var pokemons = (data['results'] as List).map((p) => Pokemon.fromJson(p)).toList();
-       
-          return ListView.builder(
-       
-            itemCount: pokemons.length,
-       
-            itemBuilder: (BuildContext context, int index) {
-       
-              return ListTile(
-       
-                title: Text(pokemons[index].name),
-              );
-            },
-          );
-        
-        } else {
-       
-          return Center(
-       
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    ),
-  );
-}
-
-
-}
 
 /*
 class PokemonDetail extends StatelessWidget {
