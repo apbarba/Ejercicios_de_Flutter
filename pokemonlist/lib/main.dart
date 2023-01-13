@@ -1,17 +1,22 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(const MyApp());
+Future<PokemonDetails> getPokemonsList() async {
+  final response =
+      await http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10'));
+
+  if (response.statusCode == 200) {
+    return PokemonDetails.fromJson(json.decode(response.body));
+  } else {
+    throw Exception("Lista de Pokemon no cargada");
+  }
 }
 
 class PokemonDetails {
   final String name;
-  final String url;
 
-  PokemonDetails({required this.name, required this.url});
+  PokemonDetails({this.name});
 
   factory PokemonDetails.fromJson(Map<String, dynamic> json) {
     return PokemonDetails(
@@ -21,40 +26,37 @@ class PokemonDetails {
   }
 }
 
-Future<http.Response> getPokemonsList() {
-  return http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#'));
-}
+void main() => runApp(MyApp(pokemonDetails: getPokemonsList()));
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Future<PokemonDetails> pokemonDetails;
+
+  MyApp({Key key, this.pokemonDetails}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: getPokemonsList(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            var data = json.decode(snapshot.data.body);
+    return MaterialApp(
+      title: "Lista de Pokemon",
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Lista de Pokemon"),
+        ),
+        body: Center(
+            child: FutureBuilder<PokemonDetails>(
+          future: pokemonDetails,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text(snapshot.data.name);
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
 
-            var pokemons = (data['results'] as List)
-                .map((p) => PokemonDetails.fromJson(p))
-                .toList();
-
-            return ListView.builder(
-              itemCount: pokemons.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(pokemons[index].name),
-                );
-              },
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+            return CircularProgressIndicator();
+          },
+        )),
       ),
     );
   }
