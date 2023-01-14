@@ -1,66 +1,98 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-Future<PokemonDetails> getPokemonsList() async {
-  final response =
-      await http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10'));
-
-  if (response.statusCode == 200) {
-    return PokemonDetails.fromJson(json.decode(response.body));
-  } else {
-    throw Exception("Lista de Pokemon no cargada");
-  }
-}
-
-class PokemonDetails {
-  final String name;
-
-  PokemonDetails({this.name});
-
-  factory PokemonDetails.fromJson(Map<String, dynamic> json) {
-    return PokemonDetails(
-      name: json['name'],
-      url: json['url'],
-    );
-  }
-}
-
-void main() => runApp(MyApp(pokemonDetails: getPokemonsList()));
-
+ void main() {
+      runApp(
+        MaterialApp(
+          home: MyApp(),
+        ),
+      );
+    }
 class MyApp extends StatelessWidget {
-  final Future<PokemonDetails> pokemonDetails;
-
-  MyApp({Key key, this.pokemonDetails}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Lista de Pokemon",
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Pokemon List',
+
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Lista de Pokemon"),
+          title: const Text('Pokemon List'),
         ),
-        body: Center(
-            child: FutureBuilder<PokemonDetails>(
-          future: pokemonDetails,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(snapshot.data.name);
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-
-            return CircularProgressIndicator();
-          },
-        )),
+        body: PokemonList(),
       ),
     );
   }
 }
+
+class PokemonList extends StatefulWidget {
+  @override
+  // ignore: library_private_types_in_public_api
+  _PokemonListState createState() => _PokemonListState();
+}
+
+class _PokemonListState extends State<PokemonList> {
+  List pokemons = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPokemons();
+  }
+
+  _fetchPokemons() async {
+    var response = await http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10'));
+    var decodedJson = jsonDecode(response.body);
+    setState(() {
+      pokemons = decodedJson['results'];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Pokemons')),
+      body: ListView.builder(
+        itemCount: pokemons.length,
+        itemBuilder: (context, index) {
+          return _pokemonCard(pokemons[index]);
+        },
+      ),
+    );
+  }
+
+  Widget _pokemonCard(pokemon) {
+    return Card(
+      child: Column(
+        children: <Widget>[
+          FutureBuilder(
+            future: _getPokemonInfo(pokemon['url']),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                var data = snapshot.data;
+                return Column(
+                  children: <Widget>[
+                    Image.network(data['sprites']['front_default']),
+                    Text(data['name']),
+                    Text(data['types'][0]['type']['name']),
+                  ],
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+_getPokemonInfo(String url) async {
+    var response = await http.get(url as Uri);
+    return jsonDecode(response.body);
+  }
+
 
 
 
