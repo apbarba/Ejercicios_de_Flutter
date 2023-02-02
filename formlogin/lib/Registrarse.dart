@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class Registrarse extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<Registrarse> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.pop(context);
             },
             child: Text(
-              'Hola!',
+              'Registrarse',
               style: TextStyle(color: Colors.white, fontSize: 25),
             ),
           ),
