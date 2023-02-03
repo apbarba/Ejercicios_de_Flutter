@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.pop(context);
             },
             child: Text(
-              'Hola!',
+              'Iniciar Sesion',
               style: TextStyle(color: Colors.white, fontSize: 25),
             ),
           ),
