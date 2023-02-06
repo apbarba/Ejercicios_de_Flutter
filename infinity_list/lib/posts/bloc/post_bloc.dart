@@ -75,8 +75,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         final map = json as Map<String, dynamic>;
         return Post(
           id: map['id'] as int,
-          title: map['title'] as String,
-          body: map['body'] as String,
+          originalTitle: map['title'] as String,
+          adult: map['body'] as bool,
+          backdropPath:map['backdropPath'] as String ,
+          genresIds:map['genresIds'] as List<int> ,
+          originalLanguaje:map['originalLanguaje'] as OriginalLanguaje ,
+          overview:map['overview'] as String ,
+          popularity:map['popularity'] as double ,
+          posterPath:map['posterPath'] as String ,
+          releaseDate:map['releaseDate'] as String ,
+          title:map['title'] as String ,
+          video:map['videp'] as bool ,
+          voteAverage:map['voteAverage'] as double ,
+          voteCount:map['voteCount'] as int 
         );
       }).toList();
     }

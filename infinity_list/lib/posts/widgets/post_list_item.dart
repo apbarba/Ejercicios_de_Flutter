@@ -16,7 +16,7 @@ class PostListItem extends StatelessWidget {
         leading: Text('${post.id}', style: textTheme.bodySmall),
         title: Text(post.title),
         isThreeLine: true,
-        subtitle: Text(post.body),
+        subtitle: Text(post.popularity as String),
         dense: true,
       ),
     );

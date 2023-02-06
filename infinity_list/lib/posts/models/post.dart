@@ -1,12 +1,60 @@
 import 'package:equatable/equatable.dart';
 
 class Post extends Equatable {
-  const Post({required this.id, required this.title, required this.body});
+  
+  const Post({
+    
+  required this.adult, 
+  required this.backdropPath, 
+  required this.genresIds,
+  required this.id,
+  required this.originalLanguaje,
+  required this.originalTitle,
+  required this.overview,
+  required this.popularity,
+  required this.posterPath,
+  required this.releaseDate,
+  required this.title,
+  required this.video,
+  required this.voteAverage,
+  required this.voteCount
+  
+  });
 
   final int id;
+  final bool adult;
+  final String backdropPath;
+  final List<int> genresIds;
+  final OriginalLanguaje originalLanguaje;
+  final String originalTitle;
+  final String overview;
+  final double popularity;
+  final String posterPath;
+  final String releaseDate;
   final String title;
-  final String body;
+  final bool video;
+  final double voteAverage;
+  final int voteCount;
 
   @override
-  List<Object> get props => [id, title, body];
+  List<Object> get props => [
+    
+    id, 
+    adult,
+    backdropPath,
+    genresIds,
+    originalLanguaje,
+    originalTitle,
+    overview,
+    popularity,
+    posterPath,
+    releaseDate,
+    title,
+    video,
+    voteAverage,
+    voteCount 
+   
+    ];
 }
+
+enum OriginalLanguaje {En, Ko, It, Es}
