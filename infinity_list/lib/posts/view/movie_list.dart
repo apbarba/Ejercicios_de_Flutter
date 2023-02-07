@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_infinite_list/posts/posts.dart';
+import 'package:flutter_infinite_list/posts/movies.dart';
 
-import '../bloc/post_bloc.dart';
+import '../bloc/movie_bloc.dart';
 
 class PostsList extends StatefulWidget {
   const PostsList({super.key});
@@ -26,16 +26,16 @@ class _PostsListState extends State<PostsList> {
       builder: (context, state) {
         switch (state.status) {
           case PostStatus.failure:
-            return const Center(child: Text('failed to fetch posts'));
+            return const Center(child: Text('No se puede cargar'));
           case PostStatus.success:
             if (state.posts.isEmpty) {
-              return const Center(child: Text('no posts'));
+              return const Center(child: Text('No hay películas'));
             }
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return index >= state.posts.length
                     ? const BottomLoader()
-                    : PostListItem(post: state.posts[index]);
+                    : PostListItem(movies: state.posts[index]);
               },
               itemCount: state.hasReachedMax
                   ? state.posts.length

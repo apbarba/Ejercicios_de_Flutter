@@ -1,3 +1,3 @@
-export 'posts_list.dart';
+export 'movie_list.dart';
 
-export 'posts_page.dart';
+export 'movie_page.dart';

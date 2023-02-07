@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_infinite_list/posts/posts.dart';
+import 'package:flutter_infinite_list/posts/movies.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
-part 'post_event.dart';
-part 'post_state.dart';
+part 'movie_event.dart';
+part 'movie_state.dart';
 
 const _postLimit = 20;
 const throttleDuration = Duration(milliseconds: 100);
@@ -61,34 +61,33 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
   }
 
-  Future<List<Post>> _fetchPosts([int startIndex = 0]) async {
+  Future<List<Movies>> _fetchPosts([int startIndex = 0]) async {
     final response = await httpClient.get(
       Uri.https(
-        'jsonplaceholder.typicode.com',
-        '/posts',
-        <String, String>{'_start': '$startIndex', '_limit': '$_postLimit'},
+        'https://api.themoviedb.org/3/movie/popular?api_key=e375f35a8ed2c4c685f14c49cc598088',
+        <String, String>{'_start': '$startIndex', '_limit': '$_postLimit'}
+            as String,
       ),
     );
     if (response.statusCode == 200) {
       final body = json.decode(response.body) as List;
       return body.map((dynamic json) {
         final map = json as Map<String, dynamic>;
-        return Post(
-          id: map['id'] as int,
-          originalTitle: map['title'] as String,
-          adult: map['body'] as bool,
-          backdropPath:map['backdropPath'] as String ,
-          genresIds:map['genresIds'] as List<int> ,
-          originalLanguaje:map['originalLanguaje'] as OriginalLanguaje ,
-          overview:map['overview'] as String ,
-          popularity:map['popularity'] as double ,
-          posterPath:map['posterPath'] as String ,
-          releaseDate:map['releaseDate'] as String ,
-          title:map['title'] as String ,
-          video:map['videp'] as bool ,
-          voteAverage:map['voteAverage'] as double ,
-          voteCount:map['voteCount'] as int 
-        );
+        return Movies(
+            id: map['id'] as int,
+            originalTitle: map['originalTitle'] as String,
+            adult: map['adult'] as bool,
+            backdropPath: map['backdropPath'] as String,
+            genresIds: map['genresIds'] as List<int>,
+            originalLanguaje: map['originalLanguaje'] as OriginalLanguaje,
+            overview: map['overview'] as String,
+            popularity: map['popularity'] as double,
+            posterPath: map['posterPath'] as String,
+            releaseDate: map['releaseDate'] as String,
+            title: map['title'] as String,
+            video: map['video'] as bool,
+            voteAverage: map['voteAverage'] as double,
+            voteCount: map['voteCount'] as int);
       }).toList();
     }
     throw Exception('error fetching posts');

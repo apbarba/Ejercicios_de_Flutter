@@ -1,4 +1,4 @@
-part of 'post_bloc.dart';
+part of 'movie_bloc.dart';
 
 abstract class PostEvent extends Equatable {
   @override

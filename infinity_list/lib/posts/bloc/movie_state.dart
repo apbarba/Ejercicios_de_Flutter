@@ -1,21 +1,21 @@
-part of 'post_bloc.dart';
+part of 'movie_bloc.dart';
 
 enum PostStatus { initial, success, failure }
 
 class PostState extends Equatable {
   const PostState({
     this.status = PostStatus.initial,
-    this.posts = const <Post>[],
+    this.posts = const <Movies>[],
     this.hasReachedMax = false,
   });
 
   final PostStatus status;
-  final List<Post> posts;
+  final List<Movies> posts;
   final bool hasReachedMax;
 
   PostState copyWith({
     PostStatus? status,
-    List<Post>? posts,
+    List<Movies>? posts,
     bool? hasReachedMax,
   }) {
     return PostState(

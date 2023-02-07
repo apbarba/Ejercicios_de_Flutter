@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_infinite_list/posts/posts.dart';
+import 'package:flutter_infinite_list/posts/movies.dart';
 
-import '../models/post.dart';
+import '../models/movie.dart';
 
 class PostListItem extends StatelessWidget {
-  const PostListItem({super.key, required this.post});
+  const PostListItem({super.key, required this.movies});
 
-  final Post post;
+  final Movies movies;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Material(
       child: ListTile(
-        leading: Text('${post.id}', style: textTheme.bodySmall),
-        title: Text(post.title),
+        leading: Text('${movies.id}', style: textTheme.bodySmall),
+        title: Text(movies.title),
         isThreeLine: true,
-        subtitle: Text(post.popularity as String),
+        subtitle: Text(movies.popularity as String),
         dense: true,
       ),
     );
